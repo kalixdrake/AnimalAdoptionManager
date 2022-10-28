@@ -1,7 +1,9 @@
 class Animal:
+
     """ Getters and setters for the  general attributes and deleter for the disponibility attribute because
     it is the only one that can be modificated. """
-    def __init__(self) -> None:
+
+    def __init__(self,name,age,species,disponibility,description) -> None:
         self._name = ""
         self._age = 0
         self._species = 0
@@ -60,7 +62,7 @@ class Animal:
 
 class Cat:
     """ Getters and setters for Cat """
-    def __init_subclass__(Animal) -> None:
+    def __init_subclass__(Animal,race,height,healthCondition) -> None:
         Animal._race = 0
         Animal._height = 0
         Animal._healthCondition = True
@@ -91,10 +93,14 @@ class Cat:
     @healthCondition.setter
     def healthCondition(self, healthCondition):
         self._healthCondition = healthCondition
+    
+    @healthCondition.deleter
+    def healthCondition(self):
+        del self._healthCondition
 
 
 class Dog:
-    def __init_subclass__(Animal) -> None:
+    def __init_subclass__(Animal,race,height,healthCondition) -> None:
         Animal._race = 0
         Animal._Height = 0
         Animal._healthCondition = True
@@ -125,3 +131,7 @@ class Dog:
     @healthCondition.setter
     def healthCondition(self, healthCondition):
         self._healthCondition = healthCondition
+    
+    @healthCondition.deleter
+    def healthCondition(self):
+        del self._healthCondition
