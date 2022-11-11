@@ -1,42 +1,37 @@
+from datetime import date
 class Animal:
 
     """ Getters and setters for the  general attributes and deleter for the disponibility attribute because
     it is the only one that can be modificated. """
 
-    def __init__(self,name,age,species,disponibility,description) -> None:
-        self._name = ""
-        self._age = 0
-        self._species = 0
-        self._disponibility = True
-        self._description = ""
-        pass
+    def __init__(self,ID,name,bornYear,disponibility,description) -> None:
+        self._name = name
+        self._bornYear = bornYear
+        self._disponibility = disponibility
+        self._description = description
+        self._ID = ID
 
+    # Inicio de getters y setters
     @property
     def name(self):
         return self._name
     
     @name.setter
     def name(self, name):
-        self._name = name
+        print("Name es un atributo de solo lectura")
 
     
     @property
-    def age(self):
-        return self._age
-    
-    @age.setter
-    def age(self, age):
-        self._age = age
+    def bornYear(self):
+        if self._bornYear>=0 and self._bornYear<=20:
+            year = date.today().year-self._bornYear
+            return year
+        else:
+            return self._bornYear
 
-
-    @property
-    def species(self):
-        return self._species
-    
-    @species.setter
-    def species(self, species):
-        self._species = species
-
+    @bornYear.setter
+    def bornYear(self, bornYear):
+        print("BornYear es un atributo de solo lectura")
 
     @property
     def disponibility(self):
@@ -46,11 +41,6 @@ class Animal:
     def disponibility(self, disponibility):
         self._disponibility = disponibility
     
-    @disponibility.deleter
-    def disponibility(self):
-        del self._disponibility
-
-    
     @property
     def description(self):
         return self._description
@@ -59,79 +49,17 @@ class Animal:
     def description(self, description):
         self._description = description
 
-
-class Cat:
-    """ Getters and setters for Cat """
-    def __init_subclass__(Animal,race,height,healthCondition) -> None:
-        Animal._race = 0
-        Animal._height = 0
-        Animal._healthCondition = True
-        pass
-
     @property
-    def race(self):
-        return self._race
-
-    @race.setter
-    def race(self, race):
-        self._race = race
+    def ID(self):
+        return self._ID
     
-
+    @ID.setter
+    def ID(self, ID):
+        print("ID es un atributo de solo lectura")
+    # Fin de getters y setters
+    
+    # Inicio de metodos
     @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, height):
-        self._height = height
+    def age(self):
+        return date.today().year-self._bornYear
     
-
-    @property
-    def healthCondition(self):
-        return self._healthCondition
-    
-    @healthCondition.setter
-    def healthCondition(self, healthCondition):
-        self._healthCondition = healthCondition
-    
-    @healthCondition.deleter
-    def healthCondition(self):
-        del self._healthCondition
-
-
-class Dog:
-    def __init_subclass__(Animal,race,height,healthCondition) -> None:
-        Animal._race = 0
-        Animal._Height = 0
-        Animal._healthCondition = True
-        pass
-
-    @property
-    def race(self):
-        return self._race
-
-    @race.setter
-    def race(self, race):
-        self._race = race
-    
-
-    @property
-    def height(self):
-        return self._height
-
-    @height.setter
-    def height(self, height):
-        self._height = height
-    
-
-    @property
-    def healthCondition(self):
-        return self._healthCondition
-    
-    @healthCondition.setter
-    def healthCondition(self, healthCondition):
-        self._healthCondition = healthCondition
-    
-    @healthCondition.deleter
-    def healthCondition(self):
-        del self._healthCondition
