@@ -20,10 +20,10 @@ class Manager:
         record = list(map(lambda x: x.strip(), record))
         if record[1] == 'Cat':
             """formato[id,class,name,bornyear,disponibility,description,race,height,healthcondition]"""
-            return Cat(record[0], float(record[2]), float(record[3]), record[4], record[5], record[6],record[7],record[8])
+            return Cat(int(record[0]), record[2], int(record[3]), record[4]=="True", record[5], record[6],int(record[7]),record[8]=="True")
         if record[1] == 'Dog':
             """formato[id,class,name,bornyear,disponibility,description,race,height,healthcondition]"""
-            return Dog(record[0], float(record[2]), float(record[3]), record[4], record[5], record[6],record[7],record[8])
+            return Dog(int(record[0]), record[2], int(record[3]), record[4]=="True", record[5], record[6],int(record[7]),record[8]=="True")
        
     def CreateAnimals(self):
         with open(self._animalData, 'r') as info:
@@ -40,29 +40,32 @@ class Manager:
         
 base1 = []
 for i in range(1,100):
+    base1.append("")
     ID,bornYear,height = i,i,i
-    name = "Gato"+str(i)
-    if i%2==0:
-        disponibility = True
-    else:
-        disponibility = False
-    description = "Es un gato muy lindo "+str(i)
+    
     race = "Raza"+str(i)
+    description = "Es un gato muy lindo "+str(i)
     if i%2==0:
-        healthCondition = False
-    else:
+        name = "Gato"+str(i)
         disponibility = True
-    if i%2==0:
-        base1.append(Dog(ID,name,bornYear,disponibility,description,race,height,healthCondition))
-    else:
-        base1.append(Cat(ID,name,bornYear,disponibility,description,race,height,healthCondition))
+        healthCondition = False
+        base1[i-1]=[str(ID),"Cat",name,str(bornYear),str(disponibility),description,race,str(height),str(healthCondition)]
 
+    else:
+        name = "Perro"+str(i)
+        disponibility = False
+        healthCondition = True
+        base1[i-1]=[str(ID),"Cat",name,str(bornYear),str(disponibility),description,race,str(height),str(healthCondition)]
 
 with open("base1.csv","w") as file:
-        file.write(base1)
+    for e in base1:
+        file.write(str(e[0])+","+str(e[1])+","+str(e[2])+","+str(e[3])+","+str(e[4])+","+str(e[5])+","+str(e[6])+","+str(e[7])+","+str(e[8])+"\n") 
+
+
+
+
 
 intentobase1 = Manager("base1.csv")
-intentobase1.CreateAnimals()
 intentobase1.createLists()
-
-print(intentobase1._disponibleAnimals)
+for animal in intentobase1._disponibleAnimals:
+    print(animal.name)

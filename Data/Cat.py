@@ -1,4 +1,4 @@
-from Animal import Animal
+from Data.Animal import Animal
 
 class Cat(Animal):
     """ Getters and setters for Cat """
@@ -34,6 +34,3 @@ class Cat(Animal):
     def healthCondition(self, healthCondition):
         self._healthCondition = healthCondition
     
-
-
-Gato1 = Cat(1, "Paco", 1, True, "Gato1", "Persa", 15, True)

@@ -1,4 +1,4 @@
-from Animal import Animal
+from Data.Animal import Animal
 
 class Dog(Animal):
     def __init__(self,ID,name,bornYear,disponibility,description,race,height,healthCondition) -> None:
