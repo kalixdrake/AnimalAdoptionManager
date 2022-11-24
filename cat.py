@@ -1,12 +1,13 @@
-from Data.animal import Animal
+from animal import Animal
 
-class Dog(Animal):
+class Cat(Animal):
     def __init__(self,ID,name,bornYear,disponibility,description,race,height,healthCondition):
         super().__init__(ID, name, bornYear, disponibility, description)
-        Animal._race = race
-        Animal._Height = height
-        Animal._healthCondition = healthCondition
+        self._race = race
+        self._height = height
+        self._healthCondition = healthCondition
 
+    """ Getters and setters for Cat """
     @property
     def race(self):
         return self._race
@@ -32,5 +33,4 @@ class Dog(Animal):
     @healthCondition.setter
     def healthCondition(self, healthCondition):
         self._healthCondition = healthCondition
-
-        
+    

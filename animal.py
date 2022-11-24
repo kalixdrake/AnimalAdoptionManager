@@ -1,4 +1,5 @@
 from datetime import date
+
 class Animal:
 
     """ Getters and setters for the  general attributes and deleter for the disponibility attribute because
@@ -59,7 +60,6 @@ class Animal:
     # Fin de getters y setters
     
     # Inicio de metodos
-    @property
     def age(self):
         return date.today().year-self._bornYear
     

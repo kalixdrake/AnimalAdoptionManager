@@ -1,12 +1,13 @@
-from Data.Animal import Animal
+from Data.animal import Animal
 
 class Cat(Animal):
     """ Getters and setters for Cat """
-    def __init__(self,ID,name,bornYear,disponibility,description,race,height,healthCondition) -> None:
+    def __init__(self,ID,name,bornYear,disponibility,description,race,height,healthCondition):
+        super().__init__(ID, name, bornYear, disponibility, description)
         self._race = race
         self._height = height
         self._healthCondition = healthCondition
-        Animal.__init__(self, ID, name, bornYear, disponibility, description)
+
 
     @property
     def race(self):

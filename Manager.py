@@ -1,22 +1,16 @@
-from Data.Cat import Cat
-from Data.Dog import Dog
+from cat import Cat
+from dog import Dog
 
 class Manager:
-    def __init__(self,animalData) -> None:
+    def __init__(self,animalData,filter) -> None:
         self._animalData = animalData
         self._animals=[]
-        self._disponibleAnimals=[]
-        self._nonDisponibleAnimals=[]
-
-    def createLists(self):
-        self.CreateAnimals()
-        for animal in self._animals:
-            if animal.disponibility==True:
-                self._disponibleAnimals.append(animal)
-            else:
-                self._nonDisponibleAnimals.append(animal)
+        self._filter=filter
+        self.createAnimals()
+        self._filter._filteredList=self._animals
         
     def createAnimal(self, record):
+        """Create an Animal object from an arrange"""
         record = list(map(lambda x: x.strip(), record))
         if record[1] == 'Cat':
             """formato[id,class,name,bornyear,disponibility,description,race,height,healthcondition]"""
@@ -25,19 +19,38 @@ class Manager:
             """formato[id,class,name,bornyear,disponibility,description,race,height,healthcondition]"""
             return Dog(int(record[0]), record[2], int(record[3]), record[4]=="True", record[5], record[6],int(record[7]),record[8]=="True")
        
-    def CreateAnimals(self):
+    def createAnimals(self):
+        """Read a data file and create Animal objects with the attributes of the file"""
         with open(self._animalData, 'r') as info:
             for line in info:
                 self._animals.append(self.createAnimal(line.split(",")))
-    
+
+    def newAnimal(self,clase,name,bornyear,disponibility,description,race,height,healthcondition):
+        """Receives the attributes and create an animal with the method createAnimal"""    
+        animal=[(self.maxID())+1,clase,name,bornyear,disponibility,description,race,height,healthcondition]
+        self._animals.append(self.createAnimal(animal))
+
     def maxID(self):
+        """Return the max ID"""
         listID = list(map(lambda x: x.ID, self._animals))
         return max(listID)
 
-    def newAnimal(self,clase,name,bornyear,disponibility,description,race,height,healthcondition):      
-        animal=[(self.maxID())+1,clase,name,bornyear,disponibility,description,race,height,healthcondition]
-        self._animals.append(self.createAnimal(animal))
-        
+    def applyFilter(self,disp,health,species,race,minAge,maxAge):
+        if disp!="No filtrar":
+            self._filter.filterByDisponibility(disp)
+        if health!="No filtrar":
+            self._filter.filterByHealth(health)
+        if species!="No filtrar":
+            self._filter.filterBySpecies(species)
+        if race!="No filtrar":
+            self._filter.filterByRace(species,race)
+        if minAge!="" and maxAge!="":
+            self._filter.filterByAge(int(minAge),int(maxAge))
+
+
+
+
+
 base1 = []
 for i in range(1,100):
     base1.append("")
@@ -63,9 +76,3 @@ with open("base1.csv","w") as file:
 
 
 
-
-
-intentobase1 = Manager("base1.csv")
-intentobase1.createLists()
-for animal in intentobase1._disponibleAnimals:
-    print(animal.name)
