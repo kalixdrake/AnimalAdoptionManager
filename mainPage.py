@@ -20,20 +20,14 @@ class MainPage(tk.Tk):
         self.config(menu=menu)
         """Create a cascade menu for filters"""
         filterMenu = tk.Menu(master=menu)
-        menu.add_cascade(label="Catalogo", menu=filterMenu)
+        menu.add_cascade(label="Inicio", menu=filterMenu)
 
         filterMenu.add_command(
-            label="Filtrar por disponibles",
+            label="Base de datos",
  
         )
         filterMenu.add_command(
-            label="Filtrar por especie y raza",
-        )
-        filterMenu.add_command(
-            label="Filtrar por edad",
-        )
-        filterMenu.add_command(
-            label="Reestablecer filtros",
+            label="Filtrar por ID",
         )
 
         """Create a cascade menu for status of the animals"""
@@ -45,13 +39,18 @@ class MainPage(tk.Tk):
         statusMenu.add_command(
             label="Cambiar estado de adopcion",
         )
-        statusMenu.add_command(label="Cambiar estado de salud", 
+        statusMenu.add_command(
+            label="Cambiar estado de salud", 
+        )
+        statusMenu.add_command(
+            label="Ingresar Nuevo",
+            command=self.creationWindow
         )
 
     """Methods for the creation of the filter Menu"""
     def _createFilterMenu(self):
         filterFrame = tk.Frame(master=self)
-        filterFrame.pack(fill=tk.X)
+        filterFrame.grid(row=0,column=0,)
         """Disponibility label and text selection"""
         self.disponibility=tk.StringVar(value="No filtrar")
         self.dispLabel = tk.Label(
@@ -84,7 +83,7 @@ class MainPage(tk.Tk):
             master=filterFrame,
             text="Condicion de salud",
             )
-        self.healthLabel.grid(row=0,column=3, 
+        self.healthLabel.grid(row=3,column=0, 
                               columnspan=2,
                               padx=20,
                               pady=10,
@@ -98,7 +97,7 @@ class MainPage(tk.Tk):
             values=["No filtrar", "Saludables", "No saludables"],
             textvariable=self.health
             )
-        self.healthList.grid(row=1,column=3,
+        self.healthList.grid(row=4,column=0,
                            columnspan=2,
                            padx=20,
                            pady=10,
@@ -111,7 +110,7 @@ class MainPage(tk.Tk):
             master=filterFrame,
             text="Especie",
             )
-        self.speciesLabel.grid(row=2,column=0, 
+        self.speciesLabel.grid(row=5,column=0, 
                               columnspan=2,
                               padx=20,
                               pady=10,
@@ -124,7 +123,7 @@ class MainPage(tk.Tk):
             values=["No filtrar", "Perro", "Gato"],
             textvariable=self.species
             )
-        self.speciesList.grid(row=3,column=0,
+        self.speciesList.grid(row=6,column=0,
                            columnspan=2,
                            padx=20,
                            pady=10,
@@ -139,7 +138,7 @@ class MainPage(tk.Tk):
             master=filterFrame,
             text="Raza",
             )
-        self.raceLabel.grid(row=2,column=3, 
+        self.raceLabel.grid(row=7,column=0, 
                               columnspan=2,
                               padx=20,
                               pady=10,
@@ -151,7 +150,7 @@ class MainPage(tk.Tk):
             state="readonly",
             textvariable=self.race
             )
-        self.raceList.grid(row=3,column=3,
+        self.raceList.grid(row=8,column=0,
                            columnspan=2,
                            padx=20,
                            pady=10,
@@ -162,15 +161,37 @@ class MainPage(tk.Tk):
 
         
 
-        """Races label and text selection"""
+        """Ages label and text selection"""
         self.minAge=tk.StringVar(value="")
         self.maxAge=tk.StringVar(value="")
         self.ageLabel = tk.Label(
             master=filterFrame,
             text="Filtro de edad",
             )
-        self.ageLabel.grid(row=4,column=0, 
+        self.ageLabel.grid(row=9,column=0, 
                               columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.minAgeLabel = tk.Label(
+            master=filterFrame,
+            text="Minima",
+            anchor="w"
+            )
+        self.minAgeLabel.grid(row=10,column=0, 
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.maxAgeLabel = tk.Label(
+            master=filterFrame,
+            text="Maxima",
+            anchor="w"
+            )
+        self.maxAgeLabel.grid(row=10,column=1, 
                               padx=20,
                               pady=10,
                               sticky="nsew"
@@ -181,8 +202,7 @@ class MainPage(tk.Tk):
             master=filterFrame,
             textvariable=self.minAge
             )
-        self.minAgeEntry.grid(row=5,column=0,
-                           columnspan=2,
+        self.minAgeEntry.grid(row=11,column=0,
                            padx=20,
                            pady=10,
                            sticky="nsew"
@@ -192,8 +212,7 @@ class MainPage(tk.Tk):
             master=filterFrame,
             textvariable=self.maxAge
             )
-        self.maxAgeEntry.grid(row=5,column=3,
-                           columnspan=2,
+        self.maxAgeEntry.grid(row=11,column=1,
                            padx=20,
                            pady=10,
                            sticky="nsew"
@@ -204,7 +223,7 @@ class MainPage(tk.Tk):
             text="Aplicar",
             command=self.filterAndRefresh
             )
-        self.applyButton.grid(row=6,column=0,
+        self.applyButton.grid(row=12,column=0,
                            padx=20,
                            pady=10,
                            sticky="nsew"
@@ -216,7 +235,7 @@ class MainPage(tk.Tk):
             text="Limpiar",
             command=self.cleanFilter
             )
-        self.cleanButton.grid(row=6,column=2,
+        self.cleanButton.grid(row=12,column=1,
                            padx=20,
                            pady=10,
                            sticky="nsew"
@@ -243,8 +262,10 @@ class MainPage(tk.Tk):
         self.race.set("No filtrar")
         self.minAge.set("")
         self.maxAge.set("")
-        """disable raceList"""
+        """disable raceList and enable applyButton"""
+        self.applyButton.config(state="normal")
         self.raceList.config(state="disabled")
+        """Restart the list"""
         self._manager._filter._filteredList=self._manager._animals
         self.Table.delete(*self.Table.get_children())
         for animal in self._manager._filter._filteredList:
@@ -260,11 +281,11 @@ class MainPage(tk.Tk):
 
     def _createList(self):
         listFrame=tk.Frame(master=self)
-        listFrame.pack(fill=tk.X)
+        listFrame.grid(row=0,column=1)
         self.Table=ttk.Treeview(master=listFrame,
             columns=("Nombre","Especie","Raza","Edad")
         )
-        self.Table.grid(row=4,column=0,
+        self.Table.grid(row=0,column=0,
                    columnspan= 5,
                    sticky="nsew"
                    )
@@ -276,7 +297,6 @@ class MainPage(tk.Tk):
         self.Table.heading("#4", text="EDAD")
 
         for animal in self._manager._filter._filteredList:
-            print(type(animal._disponibility))
             if isinstance(animal,Dog):
                 sp="Perro"
             elif isinstance(animal,Cat):
@@ -297,3 +317,217 @@ class MainPage(tk.Tk):
             self.Table.insert("",tk.END,text=str(animal._ID),
             values=(str(animal._name),sp,str(animal._race),str(animal.age()))
             )
+        self.applyButton.config(state="disabled")
+
+
+    """Create the secundary window to create a new animal"""
+    def creationWindow(self):
+        """Create the window"""
+        self.newAnimalWindow=tk.Toplevel()
+        self.newAnimalWindow.title("Nuevo Animal")
+        self.newAnimalWindow.config(width=200,height=200)
+        """Create the entrys for the values"""
+        """newSpecies label and text selection"""
+        self.newSpecies=tk.StringVar(value="")
+        self.newSpeciesLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Especie",
+            )
+        self.newSpeciesLabel.grid(row=0,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+
+        self.newSpeciesList=ttk.Combobox(
+            master=self.newAnimalWindow,
+            state="readonly",
+            values=["Perro", "Gato"],
+            textvariable=self.newSpecies
+            )
+        self.newSpeciesList.grid(row=1,column=0,
+                           columnspan=2,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+        self.newSpeciesList.bind("<<ComboboxSelected>>", self.enableNewRaceList)
+        
+        """newRace label and text selection"""
+        self.newRace=tk.StringVar(value="")
+        self.newRaceLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Raza",
+            )
+        self.newRaceLabel.grid(row=2,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+
+        self.newRaceList=ttk.Combobox(
+            master=self.newAnimalWindow,
+            state="readonly",
+            textvariable=self.newRace
+            )
+        self.newRaceList.grid(row=3,column=0,
+                           columnspan=2,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+
+        self.newRaceList.config(state="disabled")
+
+        """newName label and text entry"""
+        self.newName=tk.StringVar(value="")
+        self.newNameLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Nombre",
+            )
+        self.newNameLabel.grid(row=4,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.newNameEntry=tk.Entry(
+            master=self.newAnimalWindow,
+            textvariable=self.newName
+            )
+        self.newNameEntry.grid(row=5,column=0,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+        
+        """newBornYear label and text entry"""
+        self.newBornYear=tk.StringVar(value="")
+        self.newBornYearLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Año de nacimiento",
+            )
+        self.newBornYearLabel.grid(row=6,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.newBornYearEntry=tk.Entry(
+            master=self.newAnimalWindow,
+            textvariable=self.newBornYear
+            )
+        self.newBornYearEntry.grid(row=7,column=0,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+        
+        """newHeight label and text entry"""
+        self.newHeight=tk.StringVar(value="")
+        self.newHeightLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Tamaño",
+            )
+        self.newHeightLabel.grid(row=8,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.newHeightEntry=tk.Entry(
+            master=self.newAnimalWindow,
+            textvariable=self.newHeight
+            )
+        self.newHeightEntry.grid(row=9,column=0,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+        
+        """newDescription label and text entry"""
+        self.newDescription=tk.StringVar(value="")
+        self.newDescriptionLabel=tk.Label(
+            master=self.newAnimalWindow,
+            text="Descripcion",
+            )
+        self.newDescriptionLabel.grid(row=10,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.newDescriptionEntry=tk.Entry(
+            master=self.newAnimalWindow,
+            textvariable=self.newDescription
+            )
+        self.newDescriptionEntry.grid(row=11,column=0,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
+
+        """newHealth label ant text selection"""
+        self.newHealth = tk.BooleanVar(self)
+        self.newHealthCheckbox = ttk.Checkbutton(
+            master=self.newAnimalWindow,
+            text="Saludable", 
+            variable=self.newHealth
+            )
+
+        self.newHealthCheckbox.grid(row=12,column=0,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew",
+                            )
+        
+        """Cancel and create button"""
+        self.cancelButton=tk.Button(
+            master=self.newAnimalWindow,
+            text="Cancelar",
+            command=self.closeWindow
+            )
+        self.cancelButton.grid(row=13,column=0,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                            )
+
+
+        self.createButton=tk.Button(
+            master=self.newAnimalWindow,
+            text="Crear",
+            command=self.createAnimal
+            )
+        self.createButton.grid(row=13,column=1,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                            )
+
+
+    def enableNewRaceList(self,event):
+        """Enable raceList when species filter is given ans set values for each species"""
+        species=event.widget.get()
+        if species=="Perro":
+            self.newRaceList.config(values=["Labrador", "BullDog","Golden","Otro"])
+            self.newRaceList.config(state="readonly") 
+        elif species=="Gato":
+            self.newRaceList.config(values=["Siames", "Persa","Angora","Otro"])
+            self.newRaceList.config(state="readonly")   
+        
+    def closeWindow(self):
+        self.newAnimalWindow.destroy()
+    
+    def createAnimal(self):
+        if self.newSpecies.get()=="Perro":
+            self._manager.newAnimal("Dog",self.newName.get(),str(self.newBornYear.get()),"True",self.newDescription.get(),self.newRace.get(),str(self.newHeight.get()),str(self.newHealth.get()))
+        elif self.newSpecies.get()=="Gato":
+            self._manager.newAnimal("Cat",self.newName.get(),str(self.newBornYear.get()),"True",self.newDescription.get(),self.newRace.get(),str(self.newHeight.get()),str(self.newHealth.get()))    
+        self.closeWindow()

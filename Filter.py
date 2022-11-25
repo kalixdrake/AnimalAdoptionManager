@@ -7,10 +7,10 @@ class Filter:
     def filterByDisponibility(self,filt):
         filtered=[]
         if filt=="Disponibles":
-            filtered=list(filter(lambda animal: animal._disponibility,self._filteredList))
+            filtered=list(filter(lambda animal: animal._disponibility==True,self._filteredList))
             self._filteredList=filtered
         elif filt=="No Disponibles":
-            filtered=list(filter(lambda animal: animal._disponibility,self._filteredList))
+            filtered=list(filter(lambda animal: animal._disponibility==False,self._filteredList))
             self._filteredList=filtered
 
     
@@ -49,7 +49,7 @@ class Filter:
     
     def filterByAge(self,min,max):
         if int(min)>=0 and int(max)>=0:
-            self._filteredList=list(filter(lambda animal: int(animal.age)>=int(min) and int(animal.age)<=int(max),self._filteredList))
+            self._filteredList=list(filter(lambda animal: int(animal.age())>=int(min) and int(animal.age())<=int(max),self._filteredList))
 
     def checkDisponibility(self,ID):
         for animal in self.disponibleAnimals:

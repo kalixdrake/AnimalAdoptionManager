@@ -3,7 +3,11 @@ from animal import Animal
 class Cat(Animal):
     def __init__(self,ID,name,bornYear,disponibility,description,race,height,healthCondition):
         super().__init__(ID, name, bornYear, disponibility, description)
-        self._race = race
+        self._possibleRaces=["Siames", "Persa","Angora","Otro"]
+        if race not in self._possibleRaces:
+            self._race = "Otro"
+        else:
+            self._race=race
         self._height = height
         self._healthCondition = healthCondition
 
