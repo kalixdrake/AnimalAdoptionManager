@@ -2,12 +2,14 @@ import tkinter as tk
 from tkinter import ttk,messagebox
 from dog import Dog
 from cat import Cat
+from animal import Animal
 
 class MainPage(tk.Tk):
     def __init__(self, manager):
         super().__init__()
         self.title("Adoption Manager")
         self._manager=manager
+        self.protocol("WM_DELETE_WINDOW", self.saveAndClose)
         self._createMenu()
         self._createFilterMenu()
         self._createList()
@@ -26,21 +28,13 @@ class MainPage(tk.Tk):
             label="Base de datos",
  
         )
-        filterMenu.add_command(
-            label="Filtrar por ID",
-        )
 
         """Create a cascade menu for status of the animals"""
         statusMenu = tk.Menu(master=self)
         menu.add_cascade(label="Gestionar", menu=statusMenu)
         statusMenu.add_command(
             label="Modificar informacion",
-        )
-        statusMenu.add_command(
-            label="Cambiar estado de adopcion",
-        )
-        statusMenu.add_command(
-            label="Cambiar estado de salud", 
+            command=self.modifyWindow
         )
         statusMenu.add_command(
             label="Ingresar Nuevo",
@@ -241,7 +235,6 @@ class MainPage(tk.Tk):
                            sticky="nsew"
                             )
         
-
     def enableRaceList(self,event):
         """Enable raceList when species filter is given ans set values for each species"""
         species=event.widget.get()
@@ -620,7 +613,7 @@ class MainPage(tk.Tk):
         self.cancelButton=tk.Button(
             master=self.newAnimalWindow,
             text="Cancelar",
-            command=self.closeWindow
+            command=self.newAnimalWindow.destroy
             )
         self.cancelButton.grid(row=13,column=0,
                            padx=20,
@@ -649,13 +642,210 @@ class MainPage(tk.Tk):
         elif species=="Gato":
             self.newRaceList.config(values=["Siames", "Persa","Angora","Otro"])
             self.newRaceList.config(state="readonly")   
+
+    def modifyWindow(self):
+        """Create the window"""
+        self.modWindow=tk.Toplevel()
+        self.modWindow.title("Nuevo Animal")
+        self.modWindow.config(width=200,height=200)
+        """Create the entrys for the values"""
+        """ID search"""
+        self.IDtext=tk.StringVar(value="")
+        self.IDLabel=tk.Label(
+            master=self.modWindow,
+            text="ID:",
+            )
+        self.IDLabel.grid(row=0,column=0, 
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+
+        self.IDEntry=tk.Entry(
+            master=self.modWindow,
+            textvariable=self.IDtext,
+            )
+        self.IDEntry.grid(row=0,column=1,
+                           padx=20,
+                           pady=10,
+                           sticky="nsew"
+                           )
         
-    def closeWindow(self):
-        self.newAnimalWindow.destroy()
+        self.searchButton=tk.Button(
+            master=self.modWindow,
+            text="Buscar",
+            command=self.searchAndDisplay
+            )
+        self.searchButton.grid(row=0,column=3,
+                            columnspan=2,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew"
+                            )
+    
+    def searchAndDisplay(self):
+        """Search the ID and display info, some info is enabled to be changed"""
+        ID=self.IDtext.get()
+        an=self._manager.searchID(ID)
+        if isinstance(an,Animal):
+            if isinstance(an,Cat):
+                specie="Gato"
+            else:
+                specie="Perro"
+            """Species label, it cannot be changed"""
+            self.specLabel=tk.Label(
+                master=self.modWindow,
+                text=str("Especie:"+specie),
+                )
+            self.specLabel.grid(row=1,column=0, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew",
+                                )
+            
+            """Race label, it cannot be changed"""
+            self.raceLabel=tk.Label(
+                master=self.modWindow,
+                text="Raza:"+str(an._race),
+                )
+            self.raceLabel.grid(row=1,column=1, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew"
+                                )
+
+            """Name label, it cannot be changed"""
+            self.nameLabel=tk.Label(
+                master=self.modWindow,
+                text="Nombre:"+str(an._name),
+                )
+            self.nameLabel.grid(row=2,column=0, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew"
+                                )
+            
+            """BornYear label, it cannot be changed"""
+            self.bornLabel=tk.Label(
+                master=self.modWindow,
+                text="Nacimiento:"+str(an._bornYear),
+                )
+            self.bornLabel.grid(row=2,column=1, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew"
+                                )
+            
+            """Description label, it can be changed"""
+            self.Desc=tk.StringVar(value=str(an._description))
+            self.descLabel=tk.Label(
+                master=self.modWindow,
+                text="Descripcion:",
+                )
+            self.descLabel.grid(row=3,column=0, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew"
+                                )
+            self.descEntry=tk.Entry(
+            master=self.modWindow,
+            textvariable=self.Desc,
+            )
+            self.descEntry.grid(row=3,column=1,
+                            columnspan=5,
+                            padx=10,
+                            pady=10,
+                            sticky="nsew"
+                            )
+            
+            """Height label, it can be changed"""
+            self.Height=tk.StringVar(value=str(an._height))
+            self.HeLabel=tk.Label(
+                master=self.modWindow,
+                text="Tamaño:",
+                )
+            self.HeLabel.grid(row=4,column=0, 
+                                padx=20,
+                                pady=10,
+                                sticky="nsew"
+                                )
+            self.HeEntry=tk.Entry(
+            master=self.modWindow,
+            textvariable=self.Height,
+            )
+            self.HeEntry.grid(row=4,column=1,
+                            columnspan=5,
+                            padx=10,
+                            pady=10,
+                            sticky="nsew"
+                            )
+
+            """Disponibility checkbox, it can be changed"""
+            self.disp = tk.BooleanVar(value=an._disponibility)
+            self.dispCheckbox = ttk.Checkbutton(
+            master=self.modWindow,
+            text="Disponible", 
+            variable=self.disp
+            )
+
+            self.dispCheckbox.grid(row=5,column=0,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew",
+                            )
+            """Health condition checkbox, it can be changed"""
+            self.hs = tk.BooleanVar(value=an._healthCondition)
+            self.hsCheckbox = ttk.Checkbutton(
+            master=self.modWindow,
+            text="Saludable", 
+            variable=self.hs
+            )
+
+            self.hsCheckbox.grid(row=5,column=1,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew",
+                            )
+            
+            self.cancButton=tk.Button(
+            master=self.modWindow,
+            text="Cancelar",
+            command=self.modWindow.destroy
+            )
+            self.cancButton.grid(row=6,column=0,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew"
+                                )
+
+
+            self.saveButton=tk.Button(
+                master=self.modWindow,
+                text="Guardar",
+                command=self.changeInfo
+                )
+            self.saveButton.grid(row=6,column=1,
+                            padx=20,
+                            pady=10,
+                            sticky="nsew"
+                                )
+        else:
+            messagebox.showwarning(message="La ID buscada no fue encontrada", title="No encontrado")
+            self.modWindow.destroy()
     
     def createAnimal(self):
         if self.newSpecies.get()=="Perro":
             self._manager.newAnimal("Dog",self.newName.get(),str(self.newBornYear.get()),"True",self.newDescription.get(),self.newRace.get(),str(self.newHeight.get()),str(self.newHealth.get()))
         elif self.newSpecies.get()=="Gato":
             self._manager.newAnimal("Cat",self.newName.get(),str(self.newBornYear.get()),"True",self.newDescription.get(),self.newRace.get(),str(self.newHeight.get()),str(self.newHealth.get()))    
-        self.closeWindow()
+        self.newAnimalWindow.destroy()
+    
+    def saveAndClose(self):
+        self.close=messagebox.askokcancel(message="¿Desea continuar?\nSe guardaran los cambios realizados a la base de datos", title="Terminar Sesión")
+        if self.close:
+            self._manager.saveData()
+            self.destroy()
+    
+    def changeInfo(self):
+        self._manager.change(self.IDtext.get(),self.Desc.get(),self.Height.get(),self.disp.get(),self.hs.get())
+        self.modWindow.destroy()

@@ -49,6 +49,33 @@ class Manager:
         if maxAge=="":
             maxAge=10000
         self._filter.filterByAge(int(minAge),int(maxAge))
+    
+    def saveData(self):
+        with open("base1.csv","w") as data:
+                for animal in self._animals:
+                    if isinstance(animal,Cat):
+                        spec="Cat"
+                    else:
+                        spec="Dog"
+                    data.write(str(animal._ID)+","+str(spec)+","+str(animal._name)+","+str(animal._bornYear)+","+str(animal._disponibility)+","+str(animal._description)+","+str(animal._race)+","+str(animal._height)+","+str(animal.healthCondition)+"\n")
 
+    def checkDisponibility(self,ID):
+        disponibles=list(filter(lambda animal: animal._disponibility==True,self._animals))
+        for animal in disponibles:
+            if animal._ID==ID:
+                return "El animal {animal.name} con ID {animal.ID} está disponible en este momento"
+            else:
+                continue
 
-
+    def searchID(self,id):
+        for animal in self._animals:
+            if str(animal._ID)==str(id):
+                return animal
+        return None
+    
+    def change(self,ID,description,height,disponibility,health):
+        animal=self.searchID(ID)
+        animal._description=description
+        animal._height=height
+        animal._disponibility=disponibility
+        animal._healthCondition=health

@@ -5,15 +5,11 @@ class Filter:
         self._filteredList=[]
 
     def filterByDisponibility(self,filt):
-        filtered=[]
         if filt=="Disponibles":
-            filtered=list(filter(lambda animal: animal._disponibility==True,self._filteredList))
-            self._filteredList=filtered
+            self._filteredList=list(filter(lambda animal: animal._disponibility==True,self._filteredList))
         elif filt=="No Disponibles":
-            filtered=list(filter(lambda animal: animal._disponibility==False,self._filteredList))
-            self._filteredList=filtered
+            self._filteredList=list(filter(lambda animal: animal._disponibility==False,self._filteredList))
 
-    
     def filterByHealth(self,filt):
         if filt=="Saludables":
             self._filteredList=list(filter(lambda animal: animal._healthCondition==True,self._filteredList))
@@ -51,11 +47,6 @@ class Filter:
         if int(min)>=0 and int(max)>=0:
             self._filteredList=list(filter(lambda animal: int(animal.age())>=int(min) and int(animal.age())<=int(max),self._filteredList))
 
-    def checkDisponibility(self,ID):
-        for animal in self.disponibleAnimals:
-            if animal.ID==ID:
-                return "El animal {animal.name} con ID {animal.ID} está disponible en este momento"
-            else:
-                continue
+    
 
         return "El animal con esta ID no está disponible o no existe"
