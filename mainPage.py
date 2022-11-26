@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk,messagebox
 from dog import Dog
 from cat import Cat
 
@@ -269,7 +269,6 @@ class MainPage(tk.Tk):
         self._manager._filter._filteredList=self._manager._animals
         self.Table.delete(*self.Table.get_children())
         for animal in self._manager._filter._filteredList:
-            print(type(animal._disponibility))
             if isinstance(animal,Dog):
                 sp="Perro"
             elif isinstance(animal,Cat):
@@ -283,7 +282,9 @@ class MainPage(tk.Tk):
         listFrame=tk.Frame(master=self)
         listFrame.grid(row=0,column=1)
         self.Table=ttk.Treeview(master=listFrame,
-            columns=("Nombre","Especie","Raza","Edad")
+            columns=("Nombre","Especie","Raza","Edad"),
+            height=20,
+            selectmode="browse"
         )
         self.Table.grid(row=0,column=0,
                    columnspan= 5,
@@ -302,24 +303,152 @@ class MainPage(tk.Tk):
             elif isinstance(animal,Cat):
                 sp="Gato"
             self.Table.insert("",tk.END,text=str(animal._ID),
-            values=(str(animal._name),sp,str(animal._race),str(animal.age()))
+            values=(str(animal._name),sp,str(animal._race),str(animal.age())),
+            tags=("mytag",)
             )
+        
+        self.Table.tag_bind("mytag", "<<TreeviewSelect>>",self.showInfo)
         
     def filterAndRefresh(self):
         self.Table.delete(*self.Table.get_children())
         self._manager.applyFilter( self.disponibility.get(),self.health.get(),self.species.get(),self.race.get(),self.minAge.get(),self.maxAge.get())
         for animal in self._manager._filter._filteredList:
-            print(type(animal._disponibility))
             if isinstance(animal,Dog):
                 sp="Perro"
             elif isinstance(animal,Cat):
                 sp="Gato"
             self.Table.insert("",tk.END,text=str(animal._ID),
-            values=(str(animal._name),sp,str(animal._race),str(animal.age()))
+            values=(str(animal._name),sp,str(animal._race),str(animal.age())),
+            tags=("mytag",)
             )
         self.applyButton.config(state="disabled")
+        self.Table.tag_bind("mytag", "<<TreeviewSelect>>",self.showInfo)
 
+    def showInfo(self,event):
+        """Identify Selection"""
+        item = event.widget.selection()[0]
+        text = self.Table.item(item, option="text")
+        for animal in self._manager._animals:
+            if int(animal._ID)==int(text):
+                selectedAnimal=animal
+                break
+        """Create the secundary window to display info""" 
+        self.infoWindow=tk.Toplevel()
+        self.infoWindow.title("Nuevo Animal")
+        self.infoWindow.config(width=200,height=200)
 
+        self.IDLabel=tk.Label(
+            master=self.infoWindow,
+            text="ID:"+str(selectedAnimal._ID),
+            )
+        self.IDLabel.grid(row=0,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.NameLab=tk.Label(
+            master=self.infoWindow,
+            text="Name:"+str(selectedAnimal._name),
+            )
+        self.NameLab.grid(row=1,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.ageLab=tk.Label(
+            master=self.infoWindow,
+            text="Edad:"+str(selectedAnimal.age()),
+            )
+        self.ageLab.grid(row=2,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        if isinstance(selectedAnimal,Cat):
+            especie="Gato"
+        else:
+            especie="Perro"
+
+        self.speciesLab=tk.Label(
+            master=self.infoWindow,
+            text="Especie:"+str(especie),
+            )
+        self.speciesLab.grid(row=3,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.raceLab=tk.Label(
+            master=self.infoWindow,
+            text="Raza:"+str(selectedAnimal._race),
+            )
+        self.raceLab.grid(row=4,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.heightLab=tk.Label(
+            master=self.infoWindow,
+            text="tamaño:"+str(selectedAnimal._height),
+            )
+        self.heightLab.grid(row=5,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        self.descriptionLab=tk.Label(
+            master=self.infoWindow,
+            text="Descripcion:\n"+str(selectedAnimal._description),
+            )
+        self.descriptionLab.grid(row=4,column=0, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        if selectedAnimal._disponibility:
+            disponibilidad="Disponible"
+        else:
+            disponibilidad="No Disponible"
+        self.disponibilityLab=tk.Label(
+            master=self.infoWindow,
+            text="Disponibilidad:\n"+str(disponibilidad),
+            )
+        self.disponibilityLab.grid(row=0,column=3, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
+        if selectedAnimal._healthCondition:
+            disponibilidad="Saludable"
+        else:
+            disponibilidad="No Saludable"
+        self.disponibilityLab=tk.Label(
+            master=self.infoWindow,
+            text="Estado de salud:\n"+str(disponibilidad),
+            )
+        self.disponibilityLab.grid(row=1,column=3, 
+                              columnspan=2,
+                              padx=20,
+                              pady=10,
+                              sticky="nsew"
+                              )
+        
     """Create the secundary window to create a new animal"""
     def creationWindow(self):
         """Create the window"""
@@ -510,7 +639,6 @@ class MainPage(tk.Tk):
                            pady=10,
                            sticky="nsew"
                             )
-
 
     def enableNewRaceList(self,event):
         """Enable raceList when species filter is given ans set values for each species"""

@@ -16,9 +16,9 @@ class Filter:
     
     def filterByHealth(self,filt):
         if filt=="Saludables":
-            self._filteredList=list(filter(lambda animal: animal.healthCondition==True,self._filteredList))
+            self._filteredList=list(filter(lambda animal: animal._healthCondition==True,self._filteredList))
         elif filt=="No saludables":
-            self._filteredList=list(filter(lambda animal: animal.healthCondition==False,self._filteredList))
+            self._filteredList=list(filter(lambda animal: animal._healthCondition==False,self._filteredList))
 
     def filterBySpecies(self,filt):
         if filt=="Perro":
