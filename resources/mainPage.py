@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk,messagebox
-from dog import Dog
-from cat import Cat
-from animal import Animal
+from Data.dog import Dog
+from Data.cat import Cat
+from Data.animal import Animal
 
 class MainPage(tk.Tk):
     def __init__(self, manager):
