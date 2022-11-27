@@ -1,4 +1,4 @@
-from resources.mainPage import MainPage
+from userInterface.mainPage import MainPage
 from BussinesLogic.Manager import Manager
 from BussinesLogic.Filter import Filter
 
