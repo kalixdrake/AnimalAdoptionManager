@@ -69,7 +69,7 @@ class Manager:
     def saveData(self):
         """This method is automatically called when the user closes the program, it saves the data in the file for preventing data loss"""
 
-        with open("base1.csv","w") as data:
+        with open("resources/base1.csv","w") as data:
                 for animal in self._animals:
                     if isinstance(animal,Cat):
                         spec="Cat"

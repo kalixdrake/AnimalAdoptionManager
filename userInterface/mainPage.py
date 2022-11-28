@@ -1,14 +1,17 @@
 import tkinter as tk
+from functools import partial
 from tkinter import ttk,messagebox
 from Data.dog import Dog
 from Data.cat import Cat
 from Data.animal import Animal
+from userInterface.Table import MyTreeview
+
 
 class MainPage(tk.Tk):
     def __init__(self, manager):
         super().__init__()
         self.title("Adoption Manager")
-        self._manager=manager
+        self._manager = manager
         self.protocol("WM_DELETE_WINDOW", self.saveAndClose)
         self._createMenu()
         self._createFilterMenu()
@@ -269,26 +272,35 @@ class MainPage(tk.Tk):
             self.Table.insert("",tk.END,text=str(animal._ID),
             values=(str(animal._name),sp,str(animal._race),str(animal.age()))
             )
+            
+
     """Methods for the creation of the list"""
 
     def _createList(self):
         listFrame=tk.Frame(master=self)
         listFrame.grid(row=0,column=1)
-        self.Table=ttk.Treeview(master=listFrame,
-            columns=("Nombre","Especie","Raza","Edad"),
+        _columns=("Nombre","Especie","Raza","Edad")
+        self.Table=MyTreeview(master=listFrame,
+            columns=_columns,
             height=20,
-            selectmode="browse"
+            selectmode="browse",
+            show= "headings"
         )
+        
+        sortType = ["name", "name", "name", "num"]
+        
+        for i in range(len(_columns)):
+            strHdr = _columns[i]
+            self.Table.heading(strHdr, text=strHdr, sort_by=sortType[i])
+            self.Table.column(_columns[i], stretch=True)
+        
+        self.Table.pack()
+        
         self.Table.grid(row=0,column=0,
                    columnspan= 5,
                    sticky="nsew"
                    )
 
-        self.Table.heading("#0", text="ID")
-        self.Table.heading("#1", text="NOMBRE")
-        self.Table.heading("#2", text="ESPECIE")
-        self.Table.heading("#3", text="RAZA")
-        self.Table.heading("#4", text="EDAD")
 
         for animal in self._manager._filter._filteredList:
             if isinstance(animal,Dog):
